@@ -1,17 +1,25 @@
 package com.atn.inventoryservice.service.serviceImpl;
 
+import com.atn.inventoryservice.constants.AppConsts;
+import com.atn.inventoryservice.constants.ProductSearchEnum;
+import com.atn.inventoryservice.constants.StatusCodeEnum;
 import com.atn.inventoryservice.model.Product;
 import com.atn.inventoryservice.model.ProductMaster;
 import com.atn.inventoryservice.repository.ProductMasterRepository;
 import com.atn.inventoryservice.repository.ProductRepository;
 import com.atn.inventoryservice.request.ProductRequest;
 import com.atn.inventoryservice.request.UpdateProductStockRequest;
+import com.atn.inventoryservice.response.ProductResponse;
 import com.atn.inventoryservice.response.ServiceResponse;
 import com.atn.inventoryservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -38,11 +46,11 @@ public class ProductServiceImpl implements ProductService {
     public ServiceResponse updateProductStocks(UpdateProductStockRequest productStockRequest) {
         Product product = converUpdateProRequestToProduct(productStockRequest);
         productRepository.save(product);
-        Optional<ProductMaster> productMaster=productMasterRepository.findById(productStockRequest.getProMasterId());
+        Optional<ProductMaster> productMaster = productMasterRepository.findById(productStockRequest.getProMasterId());
 
-        if(productMaster.isPresent()){
-            ProductMaster master=productMaster.get();
-            double proQty=Double.parseDouble(master.getProQty())+Double.parseDouble(productStockRequest.getProQty());
+        if (productMaster.isPresent()) {
+            ProductMaster master = productMaster.get();
+            double proQty = Double.parseDouble(master.getProQty()) + Double.parseDouble(productStockRequest.getProQty());
             master.setProQty(String.valueOf(proQty));
             productMasterRepository.save(master);
         }
@@ -51,6 +59,27 @@ public class ProductServiceImpl implements ProductService {
                 .isSuccess(true)
                 .responseMessage("Record inserted successfully")
                 .build();
+    }
+
+    @Override
+    public List<ProductResponse> findProducts(ProductSearchEnum productSearchEnum, String searchString, StatusCodeEnum status_cd) {
+        List<ProductResponse> productResponses = null;
+        List<Object[]> productList = null;
+        switch (productSearchEnum.getSearchType()) {
+            case AppConsts.ALL:
+                productList = productMasterRepository.getAllProducts(status_cd.getStatusCode());
+                if (!CollectionUtils.isEmpty(productList)) {
+                    productResponses = productList.stream().map(ProductResponse::new).collect(Collectors.toList());
+                }
+                break;
+            case AppConsts.PRODUCT_NAME:
+                productList = productMasterRepository.getByProductName(searchString, status_cd.getStatusCode());
+                if (!CollectionUtils.isEmpty(productList)) {
+                    productResponses = productList.stream().map(ProductResponse::new).collect(Collectors.toList());
+                }
+                break;
+        }
+        return productResponses;
     }
 
     private Product converUpdateProRequestToProduct(UpdateProductStockRequest productStockRequest) {
