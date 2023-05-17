@@ -13,9 +13,12 @@ import com.atn.inventoryservice.response.ProductResponse;
 import com.atn.inventoryservice.response.ServiceResponse;
 import com.atn.inventoryservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,24 +65,41 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> findProducts(ProductSearchEnum productSearchEnum, String searchString, StatusCodeEnum status_cd) {
+    public PageImpl<ProductResponse> findProducts(ProductSearchEnum productSearchEnum, String searchString, Pageable pageable, StatusCodeEnum statusCd) {
         List<ProductResponse> productResponses = null;
         List<Object[]> productList = null;
+        Long totalRecords=null;
+        Integer pageSize = pageable.getPageSize();
+        Integer pageOffset = (int) pageable.getOffset();
         switch (productSearchEnum.getSearchType()) {
             case AppConsts.ALL:
-                productList = productMasterRepository.getAllProducts(status_cd.getStatusCode());
+                if (StatusCodeEnum.ALL.getStatusCode().equalsIgnoreCase(statusCd.getStatusCode()))
+                    productList = productMasterRepository.getAllProductsForAll(pageSize, pageOffset);
+                else
+                    productList = productMasterRepository.getAllProductsWithStatusCd(statusCd.getStatusCode(),pageSize, pageOffset);
+
+                if (productList.isEmpty()) {
+                    return new PageImpl<>(Collections.emptyList(), pageable, totalRecords);
+                }
                 if (!CollectionUtils.isEmpty(productList)) {
                     productResponses = productList.stream().map(ProductResponse::new).collect(Collectors.toList());
+                    totalRecords=(long)productResponses.size();
                 }
                 break;
             case AppConsts.PRODUCT_NAME:
-                productList = productMasterRepository.getByProductName(searchString, status_cd.getStatusCode());
+                productList = productMasterRepository.getByProductName(searchString, statusCd.getStatusCode(), pageSize, pageOffset);
+                if (productList.isEmpty()) {
+                    return new PageImpl<>(Collections.emptyList(), pageable, totalRecords);
+                }
                 if (!CollectionUtils.isEmpty(productList)) {
                     productResponses = productList.stream().map(ProductResponse::new).collect(Collectors.toList());
+                    totalRecords=productMasterRepository.getCountByProductName(searchString,statusCd.getStatusCode());
                 }
                 break;
+            default:
         }
-        return productResponses;
+
+        return new PageImpl<>(productResponses, pageable, totalRecords);
     }
 
     private Product converUpdateProRequestToProduct(UpdateProductStockRequest productStockRequest) {
