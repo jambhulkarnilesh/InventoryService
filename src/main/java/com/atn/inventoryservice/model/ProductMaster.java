@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigInteger;
 
 @Table(name = "product_master")
 @Entity
@@ -21,7 +22,7 @@ public class ProductMaster extends AuditEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pro_master_id")
-    private int proId;
+    private Long proMasterId;
 
     @Column(name = "pro_name")
     private String proName;

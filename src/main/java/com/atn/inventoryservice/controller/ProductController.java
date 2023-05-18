@@ -44,7 +44,7 @@ public class ProductController {
     }
 
     @DeleteMapping
-    public ResponseEntity<ServiceResponse> deleteProduct(@Parameter(example = "1") Integer proId) {
+    public ResponseEntity<ServiceResponse> deleteProduct(@Parameter(example = "1") Long proId) {
         return new ResponseEntity<>(productService.deleteProduct(proId), HttpStatus.OK);
     }
 }

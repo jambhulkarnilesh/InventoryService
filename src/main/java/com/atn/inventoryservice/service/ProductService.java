@@ -17,5 +17,5 @@ public interface ProductService {
 
     public PageImpl<ProductResponse> findProducts(ProductSearchEnum productSearchEnum, String searchString, Pageable pageable, StatusCodeEnum statusCd);
 
-    public ServiceResponse deleteProduct(Integer proId);
+    public ServiceResponse deleteProduct(Long proId);
 }

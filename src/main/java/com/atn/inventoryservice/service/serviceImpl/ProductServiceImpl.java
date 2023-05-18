@@ -35,21 +35,32 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ServiceResponse saveProduct(ProductRequest productRequest) {
-        Product product = converProRequestToProduct(productRequest);
-        ProductMaster productMaster = converProRequestToProMaster(productRequest);
+        Optional<ProductMaster> productMasters=productMasterRepository.findByProName(productRequest.getProName());
+        if(productMasters.isPresent()){
+            return ServiceResponse.builder()
+                    .isSuccess(false)
+                    .responseMessage(AppConsts.RECORD_ALREADY_EXIST)
+                    .build();
+        }
+        long proId = productMasterRepository.count() + 1;
+        String proCode="pro_"+proId;
+        String proBarCode="*"+proId+"*";
+
+        Product product = converProRequestToProduct(productRequest, proId,proCode, proBarCode);
+        ProductMaster productMaster = converProRequestToProMaster(productRequest, proId,proCode);
         productRepository.save(product);
         productMasterRepository.save(productMaster);
         return ServiceResponse.builder()
                 .isSuccess(true)
-                .responseMessage("Record inserted successfully")
+                .responseMessage(AppConsts.RECORD_INSERTED)
                 .build();
     }
 
     @Override
     public ServiceResponse updateProductStocks(UpdateProductStockRequest productStockRequest) {
-        Product product = converUpdateProRequestToProduct(productStockRequest);
+        Product product = converUpdateProRequestToProduct(productStockRequest, productStockRequest.getProMasterId());
         productRepository.save(product);
-        Optional<ProductMaster> productMaster = productMasterRepository.findById(productStockRequest.getProMasterId());
+        Optional<ProductMaster> productMaster = productMasterRepository.findByProMasterIdAndStatusCd(productStockRequest.getProMasterId(), "A");
 
         if (productMaster.isPresent()) {
             ProductMaster master = productMaster.get();
@@ -102,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<>(productResponses, pageable, totalRecords);
     }
 
-    private Product converUpdateProRequestToProduct(UpdateProductStockRequest productStockRequest) {
+    private Product converUpdateProRequestToProduct(UpdateProductStockRequest productStockRequest, Long proId) {
         Product product = new Product();
         product.setProMasterId(productStockRequest.getProMasterId());
         product.setColorId(productStockRequest.getColorId());
@@ -123,8 +134,10 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    private ProductMaster converProRequestToProMaster(ProductRequest productRequest) {
+    private ProductMaster converProRequestToProMaster(ProductRequest productRequest, Long proId, String proCode) {
         ProductMaster productMaster = new ProductMaster();
+        productMaster.setProMasterId(proId);
+        productMaster.setProCode(proCode);
         productMaster.setProName(productRequest.getProName());
         productMaster.setCataId(productRequest.getCataId());
         productMaster.setSubCataId(productRequest.getSubCataId());
@@ -143,8 +156,10 @@ public class ProductServiceImpl implements ProductService {
         return productMaster;
     }
 
-    private Product converProRequestToProduct(ProductRequest productRequest) {
+    private Product converProRequestToProduct(ProductRequest productRequest, Long proId,String proCode, String proBarCode) {
         Product product = new Product();
+        product.setProMasterId(proId);
+        product.setProCode(proCode);
         product.setColorId(productRequest.getColorId());
         product.setCataId(productRequest.getCataId());
         product.setSubCataId(productRequest.getSubCataId());
@@ -152,6 +167,7 @@ public class ProductServiceImpl implements ProductService {
         product.setBrandId(productRequest.getBrandId());
         product.setVendorId(productRequest.getVendorId());
         product.setProQty(productRequest.getProQty());
+        product.setProBarCode(proBarCode);
         product.setProManuDate(productRequest.getProManuDate());
         product.setProExpDate(productRequest.getProExpDate());
         product.setProPrice(productRequest.getProPrice());
@@ -164,8 +180,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceResponse deleteProduct(Integer prodId) {
-        Optional<ProductMaster> productMaster = productMasterRepository.findByProIdAndStatusCd(prodId, "A");
+    public ServiceResponse deleteProduct(Long prodId) {
+        Optional<ProductMaster> productMaster = productMasterRepository.findByProMasterIdAndStatusCd(prodId, "A");
         if (productMaster.isPresent()) {
             try {
                 productRepository.deleteProductById(prodId);
