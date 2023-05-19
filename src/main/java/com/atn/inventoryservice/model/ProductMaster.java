@@ -16,18 +16,19 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProductMaster extends AuditEntity{
+public class ProductMaster extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pro_master_id")
-    private int proId;
+    private Long proMasterId;
 
     @Column(name = "pro_name")
     private String proName;
 
     @Column(name = "pro_code")
     private String proCode;
+
 
     @Column(name = "cata_id")
     private int cataId;
@@ -69,5 +70,5 @@ public class ProductMaster extends AuditEntity{
     private String grandTotal;
 
     @Column(name = "status_cd")
-    private  String statusCd;
+    private String statusCd;
 }

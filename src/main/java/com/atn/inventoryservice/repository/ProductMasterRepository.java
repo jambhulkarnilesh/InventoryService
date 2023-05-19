@@ -15,7 +15,9 @@ import java.util.Optional;
 @Repository
 public interface ProductMasterRepository extends JpaRepository<ProductMaster, Integer> {
 
-    Optional<ProductMaster> findByProIdAndStatusCd(Integer proId, String statusCd);
+    Optional<ProductMaster> findByProMasterIdAndStatusCd(Long proId, String statusCd);
+
+    Optional<ProductMaster> findByProName(String proName);
 
     @Query(value = SQLQueryConstant.ALL_PRODUCTS, nativeQuery = true)
     List<Object[]> getAllProductsForAll(@Param("pageSize")Integer pageSize, @Param("pageOffset")Integer pageOffset);
@@ -32,5 +34,10 @@ public interface ProductMasterRepository extends JpaRepository<ProductMaster, In
     @Modifying
     @Transactional
     @Query(value = SQLQueryConstant.DELETE_PRODUCT_MASTER_BY_ID, nativeQuery = true)
-    public void deleteProductById(@Param("proId")Integer proId);
+    public void deleteProductById(@Param("proId")Long proId);
+
+    @Modifying
+    @Transactional
+    @Query(value = SQLQueryConstant.UPDATE_PRODUCT_MASTER_STOCK_BY_ID, nativeQuery = true)
+    public void updateStockProdMaster(@Param("proQty")String proQty, @Param("proId")Long proMasterId);
 }

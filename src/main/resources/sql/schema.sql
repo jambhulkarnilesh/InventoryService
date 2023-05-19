@@ -67,7 +67,6 @@ create table product_master(
 	pro_min_qty VARCHAR(30),
 	pro_critical_qty VARCHAR(30),
 	pro_desc VARCHAR(400),
-    pro_bar_code varchar(50),
     pro_image varchar(100),
     pro_height varchar(30),
     pro_width  varchar(30),

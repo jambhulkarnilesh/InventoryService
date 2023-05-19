@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductRequest {
     private String proName;
-    private String proCode;
     private int colorId;
     private int cataId;
     private int subCataId;

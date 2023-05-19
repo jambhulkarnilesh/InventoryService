@@ -10,13 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UpdateProductStockRequest {
-    private int proMasterId;
-    private String proCode;
+    private Long proMasterId;
     private int colorId;
-    private int cataId;
-    private int subCataId;
-    private int unitMeasureId;
-    private int brandId;
     private int vendorId;
     private String proQty;
     private String proManuDate;

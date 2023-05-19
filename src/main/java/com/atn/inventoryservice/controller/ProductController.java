@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class ProductController {
         return new ResponseEntity<>(productService.saveProduct(productRequest), HttpStatus.OK);
     }
 
-    @PostMapping("/update-stock")
+    @PutMapping("/update-stock")
     public ResponseEntity<ServiceResponse> updateProductStocks(@RequestBody UpdateProductStockRequest productStockRequest) {
         return new ResponseEntity<>(productService.updateProductStocks(productStockRequest), HttpStatus.OK);
     }
@@ -44,7 +45,7 @@ public class ProductController {
     }
 
     @DeleteMapping
-    public ResponseEntity<ServiceResponse> deleteProduct(@Parameter(example = "1") Integer proId) {
+    public ResponseEntity<ServiceResponse> deleteProduct(@Parameter(example = "1") Long proId) {
         return new ResponseEntity<>(productService.deleteProduct(proId), HttpStatus.OK);
     }
 }

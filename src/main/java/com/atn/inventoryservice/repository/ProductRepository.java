@@ -17,5 +17,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Modifying
     @Transactional
     @Query(value = SQLQueryConstant.DELETE_PRODUCT_BY_ID, nativeQuery = true)
-    public void deleteProductById(@Param("proId") Integer proId);
+    public void deleteProductById(@Param("proId") Long proId);
 }

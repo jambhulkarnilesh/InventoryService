@@ -21,10 +21,10 @@ public class Product extends  AuditEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pro_id")
-    private int proId;
+    private Long proId;
 
     @Column(name = "pro_master_id")
-    private int proMasterId;
+    private Long proMasterId;
 
     @Column(name = "pro_code")
     private String proCode;
