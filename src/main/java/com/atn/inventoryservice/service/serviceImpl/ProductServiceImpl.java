@@ -35,19 +35,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ServiceResponse saveProduct(ProductRequest productRequest) {
-        Optional<ProductMaster> productMasters=productMasterRepository.findByProName(productRequest.getProName());
-        if(productMasters.isPresent()){
+        Optional<ProductMaster> productMasters = productMasterRepository.findByProName(productRequest.getProName());
+        if (productMasters.isPresent()) {
             return ServiceResponse.builder()
                     .isSuccess(false)
                     .responseMessage(AppConsts.RECORD_ALREADY_EXIST)
                     .build();
         }
-        long proId = productMasterRepository.count() + 1;
-        String proCode="pro_"+proId;
-        String proBarCode="*"+proId+"*";
+        long proMasterId = productMasterRepository.count() + 1;
+        String proCode = "pro_" + proMasterId;
+        long proBarcode = productRepository.count() + 1;
+        String proBarCode = "*" + proBarcode + "*";
 
-        Product product = converProRequestToProduct(productRequest, proId,proCode, proBarCode);
-        ProductMaster productMaster = converProRequestToProMaster(productRequest, proId,proCode);
+        Product product = converProRequestToProduct(productRequest, proMasterId, proCode, proBarCode);
+        ProductMaster productMaster = convertProRequestToProMaster(productRequest, proMasterId, proCode);
         productRepository.save(product);
         productMasterRepository.save(productMaster);
         return ServiceResponse.builder()
@@ -58,20 +59,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ServiceResponse updateProductStocks(UpdateProductStockRequest productStockRequest) {
-        Product product = converUpdateProRequestToProduct(productStockRequest, productStockRequest.getProMasterId());
-        productRepository.save(product);
         Optional<ProductMaster> productMaster = productMasterRepository.findByProMasterIdAndStatusCd(productStockRequest.getProMasterId(), "A");
 
         if (productMaster.isPresent()) {
             ProductMaster master = productMaster.get();
-            double proQty = Double.parseDouble(master.getProQty()) + Double.parseDouble(productStockRequest.getProQty());
-            master.setProQty(String.valueOf(proQty));
-            productMasterRepository.save(master);
+            Product product = converUpdateProRequestToProduct(productStockRequest, master);
+            productRepository.save(product);
+
+            double updatedProQty = Double.parseDouble(master.getProQty()) + Double.parseDouble(productStockRequest.getProQty());
+            productMasterRepository.updateStockProdMaster(String.valueOf(Math.round(updatedProQty)), productStockRequest.getProMasterId());
+            return ServiceResponse.builder()
+                    .isSuccess(true)
+                    .responseMessage(AppConsts.RECORD_UPDATED)
+                    .build();
         }
 
         return ServiceResponse.builder()
                 .isSuccess(true)
-                .responseMessage("Record inserted successfully")
+                .responseMessage("Internal Server error")
                 .build();
     }
 
@@ -113,72 +118,6 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<>(productResponses, pageable, totalRecords);
     }
 
-    private Product converUpdateProRequestToProduct(UpdateProductStockRequest productStockRequest, Long proId) {
-        Product product = new Product();
-        product.setProMasterId(productStockRequest.getProMasterId());
-        product.setColorId(productStockRequest.getColorId());
-        product.setCataId(productStockRequest.getCataId());
-        product.setSubCataId(productStockRequest.getSubCataId());
-        product.setUnitMeasureId(productStockRequest.getUnitMeasureId());
-        product.setBrandId(productStockRequest.getBrandId());
-        product.setVendorId(productStockRequest.getVendorId());
-        product.setProQty(productStockRequest.getProQty());
-        product.setProManuDate(productStockRequest.getProManuDate());
-        product.setProExpDate(productStockRequest.getProExpDate());
-        product.setProPrice(productStockRequest.getProPrice());
-        product.setDiscPer(productStockRequest.getDiscPer());
-        product.setSgstPer(productStockRequest.getSgstPer());
-        product.setCgstPer(productStockRequest.getCgstPer());
-        product.setStatusCd("A");
-        product.setCreatedUserId(productStockRequest.getCreatedUserId());
-        return product;
-    }
-
-    private ProductMaster converProRequestToProMaster(ProductRequest productRequest, Long proId, String proCode) {
-        ProductMaster productMaster = new ProductMaster();
-        productMaster.setProMasterId(proId);
-        productMaster.setProCode(proCode);
-        productMaster.setProName(productRequest.getProName());
-        productMaster.setCataId(productRequest.getCataId());
-        productMaster.setSubCataId(productRequest.getSubCataId());
-        productMaster.setUnitMeasureId(productRequest.getUnitMeasureId());
-        productMaster.setBrandId(productRequest.getBrandId());
-        productMaster.setVendorId(productRequest.getVendorId());
-        productMaster.setProQty(productRequest.getProQty());
-        productMaster.setProMinQty(productRequest.getProMinQty());
-        productMaster.setProCriticalQty(productRequest.getProCriticalQty());
-        productMaster.setProDescr(productRequest.getProDescr());
-        productMaster.setProImageUrl(productRequest.getProImageUrl());
-        productMaster.setProHeight(productRequest.getProHeight());
-        productMaster.setProWidth(productRequest.getProWidth());
-        productMaster.setStatusCd("A");
-        productMaster.setCreatedUserId(productRequest.getCreatedUserId());
-        return productMaster;
-    }
-
-    private Product converProRequestToProduct(ProductRequest productRequest, Long proId,String proCode, String proBarCode) {
-        Product product = new Product();
-        product.setProMasterId(proId);
-        product.setProCode(proCode);
-        product.setColorId(productRequest.getColorId());
-        product.setCataId(productRequest.getCataId());
-        product.setSubCataId(productRequest.getSubCataId());
-        product.setUnitMeasureId(productRequest.getUnitMeasureId());
-        product.setBrandId(productRequest.getBrandId());
-        product.setVendorId(productRequest.getVendorId());
-        product.setProQty(productRequest.getProQty());
-        product.setProBarCode(proBarCode);
-        product.setProManuDate(productRequest.getProManuDate());
-        product.setProExpDate(productRequest.getProExpDate());
-        product.setProPrice(productRequest.getProPrice());
-        product.setDiscPer(productRequest.getDiscPer());
-        product.setSgstPer(productRequest.getSgstPer());
-        product.setCgstPer(productRequest.getCgstPer());
-        product.setStatusCd("A");
-        product.setCreatedUserId(productRequest.getCreatedUserId());
-        return product;
-    }
-
     @Override
     public ServiceResponse deleteProduct(Long prodId) {
         Optional<ProductMaster> productMaster = productMasterRepository.findByProMasterIdAndStatusCd(prodId, "A");
@@ -198,5 +137,76 @@ public class ProductServiceImpl implements ProductService {
                 .isSuccess(false)
                 .responseMessage(AppConsts.RECORD_NOT_EXIST)
                 .build();
+    }
+
+    private Product converUpdateProRequestToProduct(UpdateProductStockRequest productStockRequest, ProductMaster productMaster) {
+        long barcode = productRepository.count() + 1;
+        String proBarCode = "*" + barcode + "*";
+
+        Product product = new Product();
+        product.setProMasterId(productStockRequest.getProMasterId());
+        product.setProCode(productMaster.getProCode());
+        product.setColorId(productStockRequest.getColorId());
+        product.setCataId(productMaster.getCataId());
+        product.setSubCataId(productMaster.getSubCataId());
+        product.setUnitMeasureId(productMaster.getUnitMeasureId());
+        product.setBrandId(productMaster.getBrandId());
+        product.setVendorId(productStockRequest.getVendorId());
+        product.setProBarCode(proBarCode);
+        product.setProQty(productStockRequest.getProQty());
+        product.setProManuDate(productStockRequest.getProManuDate());
+        product.setProExpDate(productStockRequest.getProExpDate());
+        product.setProPrice(productStockRequest.getProPrice());
+        product.setDiscPer(productStockRequest.getDiscPer());
+        product.setSgstPer(productStockRequest.getSgstPer());
+        product.setCgstPer(productStockRequest.getCgstPer());
+        product.setStatusCd("A");
+        product.setCreatedUserId(productStockRequest.getCreatedUserId());
+        return product;
+    }
+
+    private ProductMaster convertProRequestToProMaster(ProductRequest productRequest, Long proMasterId, String proCode) {
+        ProductMaster productMaster = new ProductMaster();
+        productMaster.setProMasterId(proMasterId);
+        productMaster.setProCode(proCode);
+        productMaster.setProName(productRequest.getProName());
+        productMaster.setCataId(productRequest.getCataId());
+        productMaster.setSubCataId(productRequest.getSubCataId());
+        productMaster.setUnitMeasureId(productRequest.getUnitMeasureId());
+        productMaster.setBrandId(productRequest.getBrandId());
+        productMaster.setVendorId(productRequest.getVendorId());
+        productMaster.setProQty(productRequest.getProQty());
+        productMaster.setProMinQty(productRequest.getProMinQty());
+        productMaster.setProCriticalQty(productRequest.getProCriticalQty());
+        productMaster.setProDescr(productRequest.getProDescr());
+        productMaster.setProImageUrl(productRequest.getProImageUrl());
+        productMaster.setProHeight(productRequest.getProHeight());
+        productMaster.setProWidth(productRequest.getProWidth());
+        productMaster.setStatusCd("A");
+        productMaster.setCreatedUserId(productRequest.getCreatedUserId());
+        return productMaster;
+    }
+
+    private Product converProRequestToProduct(ProductRequest productRequest, Long proMasterId, String proCode, String proBarCode) {
+        Product product = new Product();
+        product.setProMasterId(proMasterId);
+        product.setProCode(proCode);
+        product.setColorId(productRequest.getColorId());
+        product.setCataId(productRequest.getCataId());
+        product.setSubCataId(productRequest.getSubCataId());
+        product.setUnitMeasureId(productRequest.getUnitMeasureId());
+        product.setBrandId(productRequest.getBrandId());
+        product.setVendorId(productRequest.getVendorId());
+        product.setProQty(productRequest.getProQty());
+        product.setProBarCode(proBarCode);
+        product.setProManuDate(productRequest.getProManuDate());
+        product.setProExpDate(productRequest.getProExpDate());
+        product.setProPrice(productRequest.getProPrice());
+        product.setDiscPer(productRequest.getDiscPer());
+        product.setSgstPer(productRequest.getSgstPer());
+        product.setCgstPer(productRequest.getCgstPer());
+        product.setStatusCd("A");
+        product.setCreatedUserId(productRequest.getCreatedUserId());
+        return product;
     }
 }

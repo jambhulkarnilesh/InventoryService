@@ -12,6 +12,5 @@ public final class AppConsts {
     public static final String RECORD_NOT_DELETED = "Record Not Deleted";
     public static final String RECORD_ALREADY_EXIST = "Record already exist";
     public static final String RECORD_NOT_EXIST = "Record not exist";
-
-
+    public static final String RECORD_UPDATED = "Record updated successfully";
 }

@@ -11,4 +11,6 @@ public class SQLQueryConstant {
 
     public static final String DELETE_PRODUCT_MASTER_BY_ID = "update product_master set status_cd='I' where pro_master_id=?";
     public static final String DELETE_PRODUCT_BY_ID = "update product set status_cd='I' where pro_master_id=?";
+
+    public static final String UPDATE_PRODUCT_MASTER_STOCK_BY_ID = "update product_master set pro_qty=? where pro_master_id=?";
 }

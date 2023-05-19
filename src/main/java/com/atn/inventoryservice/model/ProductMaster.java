@@ -10,14 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigInteger;
 
 @Table(name = "product_master")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProductMaster extends AuditEntity{
+public class ProductMaster extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +28,7 @@ public class ProductMaster extends AuditEntity{
 
     @Column(name = "pro_code")
     private String proCode;
+
 
     @Column(name = "cata_id")
     private int cataId;
@@ -70,5 +70,5 @@ public class ProductMaster extends AuditEntity{
     private String grandTotal;
 
     @Column(name = "status_cd")
-    private  String statusCd;
+    private String statusCd;
 }
