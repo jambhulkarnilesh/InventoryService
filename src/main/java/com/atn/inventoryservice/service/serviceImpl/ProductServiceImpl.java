@@ -182,6 +182,7 @@ public class ProductServiceImpl implements ProductService {
         productMaster.setProImageUrl(productRequest.getProImageUrl());
         productMaster.setProHeight(productRequest.getProHeight());
         productMaster.setProWidth(productRequest.getProWidth());
+        productMaster.setGrandTotal(productRequest.getGrandTotal());
         productMaster.setStatusCd("A");
         productMaster.setCreatedUserId(productRequest.getCreatedUserId());
         return productMaster;
@@ -203,8 +204,13 @@ public class ProductServiceImpl implements ProductService {
         product.setProExpDate(productRequest.getProExpDate());
         product.setProPrice(productRequest.getProPrice());
         product.setDiscPer(productRequest.getDiscPer());
+        product.setDiscRs(productRequest.getDiscRs());
+        product.setPrdDiscPriceRs(productRequest.getPrdDiscPriceRs());
         product.setSgstPer(productRequest.getSgstPer());
+        product.setSgstRs(productRequest.getSgstRs());
         product.setCgstPer(productRequest.getCgstPer());
+        product.setCgstRs(productRequest.getCgstRs());
+        product.setGrandTotal(productRequest.getGrandTotal());
         product.setStatusCd("A");
         product.setCreatedUserId(productRequest.getCreatedUserId());
         return product;

@@ -69,7 +69,7 @@ public class Product extends  AuditEntity{
     private String discRs;
 
     @Column(name = "pro_price_disc")
-    private String prdProPrice;
+    private String prdDiscPriceRs;
 
     @Column(name = "sgst_per")
     private String sgstPer;

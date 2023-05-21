@@ -6,12 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9010bfbc-6216-4d33-a009-af2e16fd42c5" name="Changes" comment="Product Search API added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/constants/AppConsts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/constants/AppConsts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/constants/SQLQueryConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/constants/SQLQueryConstant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/controller/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/model/ProductMaster.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/model/ProductMaster.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/repository/ProductMasterRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/repository/ProductMasterRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/request/UpdateProductStockRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/request/UpdateProductStockRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/model/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/request/ProductRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/request/ProductRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/service/serviceImpl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/service/serviceImpl/ProductServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -126,11 +122,6 @@
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/controller/ProductController.java</url>
-          <line>30</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/service/serviceImpl/ProductServiceImpl.java</url>
           <line>61</line>
           <option name="timeStamp" value="19" />
@@ -139,6 +130,16 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/service/serviceImpl/ProductServiceImpl.java</url>
           <line>68</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/service/serviceImpl/ProductServiceImpl.java</url>
+          <line>169</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/atn/inventoryservice/service/serviceImpl/ProductServiceImpl.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
