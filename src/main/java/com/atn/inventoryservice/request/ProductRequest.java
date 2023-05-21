@@ -28,7 +28,12 @@ public class ProductRequest {
     private String proWidth;
     private String proPrice;
     private String discPer;
+    private String discRs;
+    private String prdDiscPriceRs;
     private String sgstPer;
+    private String sgstRs;
     private String cgstPer;
+    private String cgstRs;
+    private String grandTotal;
     private String createdUserId;
 }
